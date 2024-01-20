@@ -3,25 +3,32 @@ import { useSelector } from 'react-redux'
 import Card from './Card'
 import MobileCardSlider from './MobileCardSlider';
 import Loader from './Loader';
+import Swipe from './Swipe';
+import { useParams } from 'react-router-dom';
 
 const RelatedProducts = () => {
     const {relatedProducts, productLoading} = useSelector((store) => store.filter);
-    const [visible, setVisible] = useState(true);
-
     const [sliderPosition, setSliderPosition] = useState(0)
     const relatedSlider = useRef(null)
+    const [showSwiper, setShowSwiper] = useState(true)
+    const {id} = useParams();
 
 
     useEffect(() => {
         handleScroll(relatedSlider)
     }, [relatedProducts])
 
+    useEffect(() => {
+      setSliderPosition(0)
+      setShowSwiper(true)
+    }, [id])
+
 
     const handleScroll = (value) => {
          if(value){
 
             value.current.addEventListener('scroll', () => {
-              console.log('runnin')
+
               const currentScroll = value.current.scrollLeft;
               const maxScroll = value.current.scrollWidth - value.current.clientWidth;
 
@@ -29,6 +36,44 @@ const RelatedProducts = () => {
             })
         }
     }
+
+
+      useEffect(() => {
+  
+      const targetElement = document.getElementById('related-products-slider');
+
+      
+      const options = {
+        root: null, // Use the viewport as the root
+        rootMargin: '0px', // No margin around the root
+        threshold: 1 // Trigger the callback when 50% of the target is visible
+      };
+
+      // Intersection Observer callback function
+      const intersectionCallback = (entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+           setTimeout(() => {
+             setShowSwiper(false)
+           }, 4000);
+           
+          
+          } else {
+           
+          
+          
+          }
+        });
+      };
+
+      // Create an Intersection Observer
+      const observer = new IntersectionObserver(intersectionCallback, options);
+
+      // Observe the target element
+      observer.observe(targetElement);
+
+    }, [relatedProducts])
+
 
     if(productLoading){
       return <Loader classProp={'medium-loader'}/>
@@ -55,10 +100,12 @@ const RelatedProducts = () => {
         <div className="underline"></div>
          <h1 className="heading" style={{marginTop: '30px'}}>Related Products</h1>
 
-      <div className='cards-slider' ref={relatedSlider}>
+
+      <div id='related-products-slider' className='cards-slider' ref={relatedSlider}>
         {relatedProducts.map((item, index) => {
               return <Card key={index} {...item}/>
         })}
+        {showSwiper && <Swipe/>}
         </div>
 
         <div className='mobile-slider-width'>

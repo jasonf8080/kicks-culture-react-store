@@ -39,7 +39,7 @@ const CartItems = () => {
                 <div className="white-line"></div>
                 
         
-                <div className="mobile-cart-items">
+                <div className="mobile-cart-items" style={{marginBottom: '50px'}} >
                     {cartItems.map((item, index) => {
                         return <MobileCartItem key={index} {...item}/>
                     })}

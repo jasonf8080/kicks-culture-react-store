@@ -166,8 +166,15 @@ max-width: fit-content;
   cursor: pointer;
 }
 
+
 .article-item:hover.article-item img {
   transform: scale(1.1);
+}
+
+@media(max-width: 700px) {
+ .article-item:hover.article-item img {
+  transform: scale(1);
+}
 }
 
 .article-item .img-container,
